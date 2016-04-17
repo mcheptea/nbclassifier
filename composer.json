@@ -1,0 +1,18 @@
+{
+    "name": "markc/php-naive-bayes",
+    "description": "A php based naive bayes clasifier.",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Mark Cheptea",
+            "email": "m.celmare@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "classmap": [
+            "Classifier/"
+        ]
+    },
+    "require": {}
+}
