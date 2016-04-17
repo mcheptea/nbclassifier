@@ -29,9 +29,9 @@
 
 ini_set('memory_limit','512M');
 
-require_once 'NaiveBayesClassifier.php';
+require_once 'Classifier.php';
 
-$nbc = new NaiveBayesClassifier(array(
+$nbc = new Classifier(array(
 	'store' => array(
 		'mode'	=> 'redis',
 		'db'	=> array(
