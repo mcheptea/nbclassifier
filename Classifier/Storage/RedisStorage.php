@@ -1,26 +1,31 @@
 <?php
 namespace Classifier\Storage;
 
+use Redis;
+
+/**
+ * RedisStorage storage driver.
+ *
+ * @package Classifier\Storage
+ */
 class RedisStorage extends AbstractStorage {
 	
 	private $conn;
 
-	private $namespace	= 'nbc-ns';
-	private $blacklist 	= 'nbc-blacklists';
-	private $words 		= "nbc-words";
-	private $sets 		= "nbc-sets";
-	private $cache		= "nbc-cache";
+	private $nsPrefix	= 'nbc-ns';
+	private $nsWord 		= "nbc-words";
+	private $nsClass	= "nbc-sets";
+	private $nsCache		= "nbc-cache";
 	public $delimiter	= "_--%%--_";
 	private $wordCount	= "--count--";
 	
 	function __construct($conf = array()) {
-		$this->namespace = $conf['namespace'];
+		$this->nsPrefix = $conf['namespace'];
 
 		// Namespacing
-		$this->blacklist	= "{$this->namespace}-{$this->blacklist}";
-		$this->words		= "{$this->namespace}-{$this->words}";
-		$this->sets			= "{$this->namespace}-{$this->sets}";
-		$this->cache		= "{$this->namespace}-{$this->cache}";
+		$this->nsWord		= "{$this->nsPrefix}-{$this->nsWord}";
+		$this->nsClass		= "{$this->nsPrefix}-{$this->nsClass}";
+		$this->nsCache		= "{$this->nsPrefix}-{$this->nsCache}";
 				
 		// Redis connection	
         $this->conn = new Redis();
@@ -31,47 +36,48 @@ class RedisStorage extends AbstractStorage {
 	public function close() {
 		$this->conn->close();
 	}
-	
-	public function addToBlacklist($word) {
-		return $this->conn->incr("{$this->blacklist}#{$word}");
-	}
-	
-	public function removeFromBlacklist($word) {
-		return $this->conn->set("{$this->blacklist}#{$word}", 0);
-	}
-	
-	public function isBlacklisted($word) {
-		$res = $this->conn->get("{$this->blacklist}#{$word}");
-		return !empty($res) && $res > 0 ? TRUE : FALSE;
-	}
-	
-	public function trainTo($word, $set) {
+
+	/**
+	 * Associate word to class
+	 * 
+	 * @param $word The word to associate.
+	 * @param $class The class
+	 */
+	public function trainTo($word, $class) {
 		// Words
-		$this->conn->hIncrBy($this->words, $word, 1);
-		$this->conn->hIncrBy($this->words, $this->wordCount, 1);
+		$this->conn->hIncrBy($this->nsWord, $word, 1);
+		$this->conn->hIncrBy($this->nsWord, $this->wordCount, 1);
 
 		// Sets
-		$key = "{$word}{$this->delimiter}{$set}";
-		$this->conn->hIncrBy($this->words, $key, 1);
-		$this->conn->hIncrBy($this->sets, $set, 1);
+		$key = "{$word}{$this->delimiter}{$class}";
+		$this->conn->hIncrBy($this->nsWord, $key, 1);
+		$this->conn->hIncrBy($this->nsClass, $class, 1);
 	}
 
-	public function deTrainFromSet($word, $set) {
-		$key = "{$word}{$this->delimiter}{$set}";
+	/**
+	 * Remove association between word and class.
+	 *
+	 * @param $word
+	 * @param $class
+	 *
+	 * @return bool
+	 */
+	public function deTrainFromSet($word, $class) {
+		$key = "{$word}{$this->delimiter}{$class}";
 
-		$check = $this->conn->hExists($this->words, $word) &&
-			$this->conn->hExists($this->words, $this->wordCount) &&
-			$this->conn->hExists($this->words, $key) &&
-			$this->conn->hExists($this->sets, $set);
+		$check = $this->conn->hExists($this->nsWord, $word) &&
+			$this->conn->hExists($this->nsWord, $this->wordCount) &&
+			$this->conn->hExists($this->nsWord, $key) &&
+			$this->conn->hExists($this->nsClass, $class);
 
 		if($check) {
 			// Words
-			$this->conn->hIncrBy($this->words, $word, -1);
-			$this->conn->hIncrBy($this->words, $this->wordCount, -1);
+			$this->conn->hIncrBy($this->nsWord, $word, -1);
+			$this->conn->hIncrBy($this->nsWord, $this->wordCount, -1);
 
 			// Sets
-			$this->conn->hIncrBy($this->words, $key, -1);
-			$this->conn->hIncrBy($this->sets, $set, -1);
+			$this->conn->hIncrBy($this->nsWord, $key, -1);
+			$this->conn->hIncrBy($this->nsClass, $class, -1);
 
 			return TRUE;
 		}
@@ -79,27 +85,61 @@ class RedisStorage extends AbstractStorage {
 			return FALSE;
 		}
 	}
-	
-	public function getAllSets() {
-		return $this->conn->hKeys($this->sets);
+
+	/**
+	 * Retrieves and returns a list of classes.
+	 *
+	 * @return array A full list of sets.
+	 */
+	public function getAllClasses() {
+		return $this->conn->hKeys($this->nsClass);
 	}
-	
-	public function getSetCount() {
-		return $this->conn->hLen($this->sets);
+
+	/**
+	 * Retrieves and returns the class count.
+	 *
+	 * @return int The class count.
+	 */
+	public function getClassCount() {
+		return $this->conn->hLen($this->nsClass);
 	}
-	
-	public function getWordCount($words) {
-		return $this->conn->hMGet($this->words, $words);
+
+	/**
+	 * Retrieves the total count for a given word
+	 *
+	 * @param $word The word for which to retrieve the count.
+	 * @return array
+	 */
+	public function getWordCount($word) {
+		return $this->conn->hMGet($this->nsWord, $word);
 	}
-	
-	public function getAllWordsCount() {
+
+	/**
+     * Retrieves the global word count. A count of all the words in the training set.
+     *
+	 * @return string The overall word count
+	 */
+	public function getTotalWordCount() {
 		return $this->conn->hGet($this->wordCount, $this->wordCount);
 	}
-	
-	public function getSetWordCount($sets) {
-		return $this->conn->hMGet($this->sets, $sets);
+
+    /**
+     * Retrieves the total word count for a set.
+     *
+     * @param $set The counted set
+     * @return array
+     */
+	public function getSetWordCount($set) {
+		return $this->conn->hMGet($this->nsClass, $set);
 	}
-	
+
+    /**
+     * Retrieves a list of word counts for a list of sets.
+     *
+     * @param $words List of words.
+     * @param $sets List of sets
+     * @return array The list of words and their counts.
+     */
 	public function getWordCountFromSet($words, $sets) {
 		$keys = array();
 		foreach($words as $word) {
@@ -107,7 +147,6 @@ class RedisStorage extends AbstractStorage {
 				$keys[] = "{$word}{$this->delimiter}{$set}";
 			}
 		}
-		return $this->conn->hMGet($this->words, $keys);
+		return $this->conn->hMGet($this->nsWord, $keys);
 	}
-	
 }
