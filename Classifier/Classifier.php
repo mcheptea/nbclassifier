@@ -27,7 +27,7 @@ class Classifier {
      * @param $class  The assigned class
      */
 	public function train($words, $class) {
-		$words = $this->cleanKeywords(explode(" ", $words));
+		$words = $this->normalize(explode(" ", $words));
 		foreach($words as $w) {
 			$this->store->trainTo(html_entity_decode($w), $class);
 		}
@@ -40,7 +40,7 @@ class Classifier {
      * @param $class The assigned class.
      */
 	public function deTrain($words, $class) {
-		$words = $this->cleanKeywords(explode(" ", $words));
+		$words = $this->normalize(explode(" ", $words));
 		foreach($words as $w) {
 			$this->store->deTrainFromSet(html_entity_decode($w), $class);
 		}
@@ -59,7 +59,7 @@ class Classifier {
 		$score = array();
 
 		// Break keywords
-		$keywords = $this->cleanKeywords(explode(" ", $words));
+		$keywords = $this->normalize(explode(" ", $words));
 
 		// All sets
 		$sets = $this->store->getAllClasses();
@@ -91,7 +91,7 @@ class Classifier {
      * @param array $words
      * @return array
      */
-	private function cleanKeywords($words = array()) {
+	private function normalize($words = array()) {
 		if(!empty($words)) {
 			$result = array();
 			foreach($words as $word) {

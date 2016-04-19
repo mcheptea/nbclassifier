@@ -13,9 +13,9 @@ class RedisStorage extends AbstractStorage {
 	private $conn;
 
 	private $nsPrefix	= 'nbc-ns';
-	private $nsWord 		= "nbc-words";
+	private $nsWord 	= "nbc-words";
 	private $nsClass	= "nbc-sets";
-	private $nsCache		= "nbc-cache";
+	private $nsCache	= "nbc-cache";
 	public $delimiter	= "_--%%--_";
 	private $wordCount	= "--count--";
 	
@@ -29,8 +29,8 @@ class RedisStorage extends AbstractStorage {
 				
 		// Redis connection	
         $this->conn = new Redis();
-        $this->conn->connect($conf['db_host'], $conf['db_port']);
-		$this->conn->select(77);
+        $this->conn->connect($conf['hsot'], $conf['port']);
+		$this->conn->select($conf['database']);
 	}
 	
 	public function close() {
