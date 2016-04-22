@@ -19,7 +19,7 @@ class RedisStorage extends AbstractStorage {
 	public $delimiter	= "_--%%--_";
 	private $wordCount	= "--count--";
 	
-	function __construct($conf = array()) {
+	function __construct($conf) {
 		$this->nsPrefix = $conf['namespace'];
 
 		// Namespacing
@@ -29,7 +29,7 @@ class RedisStorage extends AbstractStorage {
 				
 		// Redis connection	
         $this->conn = new Redis();
-        $this->conn->connect($conf['hsot'], $conf['port']);
+        $this->conn->connect($conf['host'], $conf['port']);
 		$this->conn->select($conf['database']);
 	}
 	
