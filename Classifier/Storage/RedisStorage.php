@@ -1,7 +1,8 @@
 <?php
 namespace Classifier\Storage;
 
-use Redis;
+use Predis\Client;
+use Classifier\Config;
 
 /**
  * RedisStorage storage driver.
@@ -15,9 +16,12 @@ class RedisStorage {
 
     public function __construct()
     {
-        $this->redis = new Redis();
-        $this->redis->connect("localhost");
-        $this->redis->select(0);
+        $this->redis = new Client([
+            "scheme" => "tcp",
+            "host" => Config::get("redis.host"),
+            "port" => Config::get("redis.port"),
+            "database" => Config::get("redis.database")
+        ]);
     }
 
     /**
