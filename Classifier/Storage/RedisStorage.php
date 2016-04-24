@@ -25,13 +25,13 @@ class RedisStorage {
     }
 
     /**
-     * Persists a class to storage
+     * Adds a document class.
      *
      * @param string $class The class name
      */
-    public function addClass($class)
+    public function addDocumentClass($class)
     {
-        if (!$this->existsClass($class)) {
+        if (!$this->existsDocumentClass($class)) {
             $this->redis->hset("classes", $class, 1);
         } else {
             $this->redis->hIncrBy("classes", $class, 1);
@@ -39,13 +39,13 @@ class RedisStorage {
     }
 
     /**
-     * Removes a class from storage
+     * Removes a document class from storage
      *
      * @param string $class The class name
      */
-    public function removeClass($class)
+    public function removeDocumentClass($class)
     {
-        if ($this->existsClass($class)) {
+        if ($this->existsDocumentClass($class)) {
             $this->redis->hIncrBy("classes", $class, -1);
 
             if ($this->redis->hGet("classes", $class) <= 0) {
@@ -60,9 +60,44 @@ class RedisStorage {
      * @param $class The class name
      * @return bool
      */
-    public function existsClass($class)
+    public function existsDocumentClass($class)
     {
         return $this->redis->hExists("classes", $class);
     }
 
+    /**
+     * The number of documents in a class
+     *
+     * @param $class The class name
+     * @return int The number of documents
+     */
+    public function getDocumentCountForClass($class)
+    {
+        if ($this->existsDocumentClass($class)) {
+            return (int)$this->redis->hGet("classes", $class);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * The total number of classified documents.
+     *
+     * @return int The total number of documents
+     */
+    public function getDocumentCount()
+    {
+        $classes = $this->redis->hgetall("classes");
+
+        if (empty($classes)) {
+            return 0;
+        }
+
+        $total = 0;
+        foreach ($classes  as $class) {
+            $total += $class;
+        }
+
+        return $total;
+    }
 }
