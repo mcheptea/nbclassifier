@@ -1,49 +1,19 @@
 <?php
 namespace Classifier;
 
-use Classifier\Storage\RedisStorage;
-
 /**
  * Classifier
- * Provides a series of method for classification.
+ * Provides a series of methods for document classification.
  *
  * @package Classifier
  */
-class Classifier {
-	
-	private $store;
-
+class Classifier extends AbstractClassifier
+{
     /**
      * Classifier constructor.
      */
 	public function __construct() {
-        $this->store = new RedisStorage();
-	}
-
-    /**
-     * Associates a list of words to a class.
-     *
-     * @param $words The list of words
-     * @param $class  The assigned class
-     */
-	public function train($words, $class) {
-		$words = $this->normalize(explode(" ", $words));
-		foreach($words as $w) {
-			$this->store->trainTo(html_entity_decode($w), $class);
-		}
-	}
-
-    /**
-     * Removes the association between a list of words and a class.
-     *
-     * @param $words The list of words.
-     * @param $class The assigned class.
-     */
-	public function deTrain($words, $class) {
-		$words = $this->normalize(explode(" ", $words));
-		foreach($words as $w) {
-			$this->store->deTrainFromSet(html_entity_decode($w), $class);
-		}
+        parent::__construct();
 	}
 
     /**
@@ -83,28 +53,5 @@ class Classifier {
 		arsort($score);
 
 		return array_slice($score, $offset, $count-1);
-	}
-
-    /**
-     * Normalizez a list of words by removing any special characters. 
-     *
-     * @param array $words
-     * @return array
-     */
-	private function normalize($words = array()) {
-		if(!empty($words)) {
-			$result = array();
-			foreach($words as $word) {
-                $word = strtolower($word);
-                $word = preg_replace("/[^a-z]/i", "", $word);
-
-				if(!empty($word) && strlen($word) > 2) {
-                    $word = strtolower($word);
-					if(!empty($word))
-						$result[] = $word;
-				}
-			}
-			return $result;
-		}
 	}
 }
