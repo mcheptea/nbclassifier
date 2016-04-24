@@ -73,7 +73,7 @@ class Config
      */
     private static function getArrayValueByPath($path, $array)
     {
-        if (empty($array[$path[0]])) {
+        if (!isset($array[$path[0]])) {
             throw new Exception("The configuration file doesn't contain the key '" . $path[0] . "'");
         }
 
