@@ -1,8 +1,6 @@
 <?php
 namespace Classifier;
 
-use Classifier\Storage\RedisStorage;
-
 /**
  * Trainer.
  *
@@ -20,28 +18,37 @@ class Trainer extends AbstractClassifier
     }
 
     /**
-     * Associates a list of words to a class.
+     * Associates a document to a class.
      *
-     * @param $words The list of words
-     * @param $class  The assigned class
+     * @param string $document The document contents.
+     * @param string $class The assigned class
      */
-    public function train($words, $class) {
-        $words = $this->normalize(explode(" ", $words));
-        foreach($words as $w) {
-            $this->store->trainTo(html_entity_decode($w), $class);
+    public function train($document, $class) {
+        $words = $this->normalize(explode(" ", $document));
+
+        //add document to class
+        $this->store->addDocumentClass($class);
+
+        foreach($words as $word) {
+            //train word to class
+            $this->store->addWord($word, $class);
         }
     }
 
     /**
-     * Removes the association between a list of words and a class.
+     * Removes the association between a document and a class.
      *
-     * @param $words The list of words.
-     * @param $class The assigned class.
+     * @param string $document The document contents
+     * @param string $class The assigned class.
      */
-    public function unTrain($words, $class) {
-        $words = $this->normalize(explode(" ", $words));
-        foreach($words as $w) {
-            $this->store->deTrainFromSet(html_entity_decode($w), $class);
+    public function unTrain($document, $class) {
+        $words = $this->normalize(explode(" ", $document));
+
+        //remove document from class
+        $this->store->removeDocumentClass($class);
+
+        foreach ($words as $word) {
+            $this->store->removeWord($word, $class);
         }
     }
 }
