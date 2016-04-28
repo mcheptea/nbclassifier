@@ -57,7 +57,7 @@ class RedisStorage {
     /**
      * Checks if a class exists in storage
      *
-     * @param $class The class name
+     * @param string $class The class name
      * @return bool
      */
     public function existsDocumentClass($class)
@@ -68,7 +68,7 @@ class RedisStorage {
     /**
      * Returns the number of documents in a class
      *
-     * @param $class The class name
+     * @param string $class The class name
      * @return int The number of documents
      */
     public function getDocumentCountForClass($class)
@@ -105,8 +105,8 @@ class RedisStorage {
     /**
      * Persists words and their corresponding clsasses.
      *
-     * @param $word The word
-     * @param $class The class
+     * @param string $word The word
+     * @param string $class The class
      */
     public function addWord($word, $class)
     {
@@ -135,8 +135,8 @@ class RedisStorage {
     /**
      * Removes word from storage.
      *
-     * @param $word
-     * @param $class
+     * @param string $word
+     * @param string $class
      */
     public function removeWord($word, $class)
     {
@@ -167,8 +167,8 @@ class RedisStorage {
     /**
      * Returns the number of word occurrences in class.
      *
-     * @param $word
-     * @param $class
+     * @param string $word
+     * @param string $class
      * @return int The number of occurrences of a word in class.
      */
     public function countWordInClass($word, $class)
@@ -183,7 +183,7 @@ class RedisStorage {
     /**
      * Returns the total number of words in a given class.
      *
-     * @param $class
+     * @param string $class
      * @return int the number of words in the class
      */
     public function countWordsInClass($class)
