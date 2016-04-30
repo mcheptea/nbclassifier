@@ -29,9 +29,9 @@ class RedisStorage {
      *
      * @param string $class The class name
      */
-    public function addDocumentClass($class)
+    public function addClass($class)
     {
-        if (!$this->existsDocumentClass($class)) {
+        if (!$this->existsClass($class)) {
             $this->redis->hset("classes", $class, 1);
         } else {
             $this->redis->hIncrBy("classes", $class, 1);
@@ -43,9 +43,9 @@ class RedisStorage {
      *
      * @param string $class The class name
      */
-    public function removeDocumentClass($class)
+    public function removeClass($class)
     {
-        if ($this->existsDocumentClass($class)) {
+        if ($this->existsClass($class)) {
             $this->redis->hIncrBy("classes", $class, -1);
 
             if ($this->redis->hGet("classes", $class) <= 0) {
@@ -55,12 +55,22 @@ class RedisStorage {
     }
 
     /**
+     * Returns the full class list.
+     *
+     * @return array<string> List of classes.
+     */
+    public function getAllClasses()
+    {
+       return $this->redis->hkeys("classes");
+    }
+
+    /**
      * Checks if a class exists in storage
      *
      * @param string $class The class name
      * @return bool
      */
-    public function existsDocumentClass($class)
+    public function existsClass($class)
     {
         return $this->redis->hExists("classes", $class);
     }
@@ -71,9 +81,9 @@ class RedisStorage {
      * @param string $class The class name
      * @return int The number of documents
      */
-    public function getDocumentCountForClass($class)
+    public function getClassCount($class)
     {
-        if ($this->existsDocumentClass($class)) {
+        if ($this->existsClass($class)) {
             return (int)$this->redis->hGet("classes", $class);
         } else {
             return 0;
