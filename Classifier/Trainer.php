@@ -27,7 +27,7 @@ class Trainer extends AbstractClassifier
         $words = $this->normalize(explode(" ", $document));
 
         //add document to class
-        $this->store->addDocumentClass($class);
+        $this->store->addClass($class);
 
         foreach($words as $word) {
             //train word to class
@@ -45,7 +45,7 @@ class Trainer extends AbstractClassifier
         $words = $this->normalize(explode(" ", $document));
 
         //remove document from class
-        $this->store->removeDocumentClass($class);
+        $this->store->removeClass($class);
 
         foreach ($words as $word) {
             $this->store->removeWord($word, $class);
