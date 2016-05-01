@@ -17,41 +17,49 @@ class Classifier extends AbstractClassifier
 	}
 
     /**
-     * Classifies a list of words to a class.
+     * Classifies a document string and returns the top N predicted classes and their scores.
      *
-     * @param $words
-     * @param int $count
-     * @param int $offset
-     * @return array
+     * @param string 	$document   The document to classify
+     * @param int 		$top 	    Number of top classes to return.
+	 *
+     * @return array 	A descendingly sorted list of classes and their scores
+	 * 					Example: array("class" => "score", ...)
      */
-	public function classify($words, $count = 10, $offset = 0) {
-		$P = array();
-		$score = array();
+	public function classify($document, $top = 5)
+	{
+		$words = $this->normalize(explode(" ", $document));
 
-		// Break keywords
-		$keywords = $this->normalize(explode(" ", $words));
+		$classes = $this->store->getAllClasses();
 
-		// All sets
-		$sets = $this->store->getAllClasses();
-		$P['sets'] = array();
-
-		// Word counts in sets
-		$setWordCounts = $this->store->getSetWordCount($sets);
-		$wordCountFromSet = $this->store->getWordCountFromSet($keywords, $sets);
-
-		foreach($sets as $set) {
-			foreach($keywords as $word) {
-				$key = "{$word}{$this->store->delimiter}{$set}";
-				if($wordCountFromSet[$key] > 0)
-					$P['sets'][$set] += $wordCountFromSet[$key] / $setWordCounts[$set];
-			}
-
-			if(!is_infinite($P['sets'][$set]) && $P['sets'][$set] > 0)
-				$score[$set] = $P['sets'][$set];
+		//prior probabilities
+		$priors = array();
+		$totalDocuments = $this->store->getDocumentCount();
+		foreach ($classes as $class) {
+			$priors[$class] = $this->store->getClassCount($class)/$totalDocuments;
 		}
 
-		arsort($score);
+		//vocalbulary
+        $vocabulary = $this->store->countVocabulary();
 
-		return array_slice($score, $offset, $count-1);
+        //conditional probabilities
+        $conditionals = array();
+        foreach ($classes as $class) {
+            foreach ($words as $word) {
+                $countWordInClass = $this->store->countWordInClass($word, $class);
+                $wordsInClass = $this->store->countWordsInClass($class);
+                $conditionals[$class][$word] = ($countWordInClass + 1) / ($wordsInClass + $vocabulary + 1);
+            }
+        }
+
+        //probabilities
+        $probabilities = array();
+        foreach ($classes as $class) {
+            $probabilities[$class] = $priors[$class] * array_product($conditionals[$class]);
+        }
+
+        //sort
+        arsort($probabilities);
+
+        return array_slice($probabilities, 0, $top);
 	}
 }
