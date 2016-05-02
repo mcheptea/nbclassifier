@@ -38,7 +38,7 @@ class Classifier extends AbstractClassifier
 			$priors[$class] = $this->store->getClassCount($class)/$totalDocuments;
 		}
 
-		//vocalbulary
+		//vocabulary
         $vocabulary = $this->store->countVocabulary();
 
         //conditional probabilities

@@ -1,5 +1,5 @@
 <?php
-namespace Classifier;
+namespace Classifier\Config;
 
 use Symfony\Component\Yaml\Yaml;
 use Exception;
