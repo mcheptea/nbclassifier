@@ -10,7 +10,8 @@ use Classifier\Config;
  * @package Classifier\Storage
  * @author Mark Cheptea <m.celmare@gmail.com>
  */
-class RedisStorage {
+class RedisStorage
+{
 
     private $redis;
 
@@ -61,7 +62,7 @@ class RedisStorage {
      */
     public function getAllClasses()
     {
-       return $this->redis->hkeys("classes");
+        return $this->redis->hkeys("classes");
     }
 
     /**
@@ -104,7 +105,7 @@ class RedisStorage {
         }
 
         $total = 0;
-        foreach ($classes  as $class) {
+        foreach ($classes as $class) {
             $total += $class;
         }
 

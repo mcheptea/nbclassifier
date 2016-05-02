@@ -17,7 +17,8 @@ class AbstractClassifier
     /**
      * Classifier constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->store = new RedisStorage();
     }
 
@@ -27,17 +28,19 @@ class AbstractClassifier
      * @param array $words
      * @return array
      */
-    protected function normalize($words = array()) {
-        if(!empty($words)) {
+    protected function normalize($words = array())
+    {
+        if (!empty($words)) {
             $result = array();
-            foreach($words as $word) {
+            foreach ($words as $word) {
                 $word = strtolower($word);
                 $word = preg_replace("/[^a-z]/i", "", $word);
 
-                if(!empty($word) && strlen($word) > 2) {
+                if (!empty($word) && strlen($word) > 2) {
                     $word = strtolower($word);
-                    if(!empty($word))
+                    if (!empty($word)) {
                         $result[] = $word;
+                    }
                 }
             }
             return $result;

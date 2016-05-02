@@ -28,7 +28,7 @@ class Config
         $path = explode(".", $path);
         $configFileName = __DIR__ . "/" . self::$configFile;
 
-        if(!file_exists($configFileName)){
+        if (!file_exists($configFileName)) {
             throw new Exception("No configuration file named ". $configFileName . " exists!");
         }
 
@@ -50,7 +50,7 @@ class Config
         $keys = explode(".", $path);
         $configFileName = __DIR__ . "/" . self::$configFile;
 
-        if(!file_exists($configFileName)){
+        if (!file_exists($configFileName)) {
             throw new Exception("No configuration file named ". $configFileName . " exists!");
         }
 
@@ -92,10 +92,11 @@ class Config
      * @param mixed $value, value
      * @return array
      */
-    private static function setArrayValueByPath(&$array, $pathParts, &$value) {
+    private static function setArrayValueByPath(&$array, $pathParts, &$value)
+    {
         $current = &$array;
 
-        foreach($pathParts as $key) {
+        foreach ($pathParts as $key) {
             $current = &$current[$key];
         }
         $backup = $current;

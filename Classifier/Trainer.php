@@ -13,7 +13,8 @@ class Trainer extends AbstractClassifier
     /**
      * Trainer constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -23,13 +24,14 @@ class Trainer extends AbstractClassifier
      * @param string $document The document contents.
      * @param string $class The assigned class
      */
-    public function train($document, $class) {
+    public function train($document, $class)
+    {
         $words = $this->normalize(explode(" ", $document));
 
         //add document to class
         $this->store->addClass($class);
 
-        foreach($words as $word) {
+        foreach ($words as $word) {
             //train word to class
             $this->store->addWord($word, $class);
         }
@@ -41,7 +43,8 @@ class Trainer extends AbstractClassifier
      * @param string $document The document contents
      * @param string $class The assigned class.
      */
-    public function unTrain($document, $class) {
+    public function unTrain($document, $class)
+    {
         $words = $this->normalize(explode(" ", $document));
 
         //remove document from class
