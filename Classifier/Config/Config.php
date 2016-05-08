@@ -14,7 +14,7 @@ use Exception;
  */
 class Config
 {
-    public static $configFile = "../config.yml";
+    public static $configFile = "../../config.yml";
 
     /**
      * Returns the value of a key. The path is separated by dots (.)

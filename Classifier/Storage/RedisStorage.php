@@ -2,7 +2,7 @@
 namespace Classifier\Storage;
 
 use Predis\Client;
-use Classifier\Config;
+use Classifier\Config\Config;
 
 /**
  * RedisStorage storage driver.
