@@ -137,7 +137,7 @@ class RedisStorage
 
         //increment vocabulary (number of unique words)
         if (!$this->redis->hexists("vocabulary", $word)) {
-            $this->redis->hset("vocabulary", $word, 0);
+            $this->redis->hset("vocabulary", $word, 1);
         } else {
             $this->redis->hincrby("vocabulary", $word, 1);
         }
