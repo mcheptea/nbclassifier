@@ -1,6 +1,7 @@
 <?php
 /**
  * This scripts trains the classifier using the example dataset.
+ * You can train the same unmodified dataset multiple times, without affecting the classifier outcome.
  *
  * User: Mark Cheptea
  * Date: 08-May-16
@@ -10,12 +11,15 @@ require_once(__DIR__ . "/../vendor/autoload.php");
 
 use Classifier\Trainer;
 
+/* Retrieve the documents*/
 echo "Retrieving the documents...\n";
 $documents = file_get_contents(__DIR__ . "/Datasets/training.set.json");
 $documents = json_decode($documents, true);
+echo "\tFound " . count($documents) . " documents\n\n";
 
+/* Train the documents */
 echo "Training the documents...\n";
-$stime = microtime();
+$stime = microtime(true);
 $trainer = new Trainer();
 
 foreach ($documents as $document) {
@@ -26,10 +30,11 @@ foreach ($documents as $document) {
             echo "The trainer failed with message: ". $e->getMessage() ."\n";
             die(1);
         }
-        echo $document['document'] . " => " . $class;
+        echo "\t". $document['document'] . " => " . $class . "\n";
     }
 }
 
-echo "Finished.";
-$time = microtime() - $stime;
-echo "Trained " . count($documents) . " documents in " . $time . " seconds.";
+/* Print result information */
+echo "\n\nFinished.\n";
+$time = microtime(true) - $stime;
+echo "\tTrained " . count($documents) . " documents in " . number_format($time, 3) . " seconds.";
