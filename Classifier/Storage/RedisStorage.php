@@ -172,6 +172,10 @@ class RedisStorage
         //decrement vocabulary
         if ($this->redis->hexists("vocabulary", $word)) {
             $this->redis->hincrby("vocabulary", $word, -1);
+
+            if ($this->redis->hGet("vocabulary", $word) <= 0) {
+                $this->redis->hDel("vocabulary", $word);
+            }
         }
     }
 
