@@ -1,21 +1,21 @@
 {
-    "name": "markc/php-naive-bayes",
-    "description": "A php based naive bayes clasifier.",
-    "license": "GPLv3",
+    "name": "mcheptea/nbclassifier",
+    "description": "A simple naive bayes text/document classier. This library allows classifying text to one or more classes.",
+    "type": "library",
+    "require": {
+        "symfony/yaml": "2.8.4",
+        "predis/predis": "1.0.3"
+    },
+    "license": "MIT",
     "authors": [
         {
             "name": "Mark Cheptea",
             "email": "m.celmare@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "autoload": {
-        "classmap": [
-            "Classifier/"
-        ]
+        "psr-4": {"Classifier\\": "src/Classifier"}
     },
-    "require": {
-        "symfony/yaml": "2.8.4",
-        "predis/predis": "1.0.3"
-    }
+    "minimum-stability": "dev",
+    "bin": ["bin/nbtrainer", "bin/nbclassifier"]
 }
