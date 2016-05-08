@@ -1,6 +1,6 @@
 <?php
 /**
- * This scripts trains the classifier using the example dataset.
+ * This script trains the classifier using the example dataset.
  * You can train the same unmodified dataset multiple times, without affecting the classifier outcome.
  *
  * User: Mark Cheptea
