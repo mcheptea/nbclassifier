@@ -1,0 +1,42 @@
+[
+  {
+    "document": "water irrigation building material",
+    "classes": ["water"]
+  },
+  {
+    "document": "machinery material clay sand",
+    "classes": ["construction"]
+  },
+  {
+    "document": "water canal irrigation clay",
+    "classes": ["water"]
+  },
+  {
+    "document": "irrigation tubes water sand",
+    "classes": ["water"]
+  },
+  {
+    "document": "material sand tubes building",
+    "classes": ["construction"]
+  },
+  {
+    "document": "tractor excavator platform clay sand aggregate erosion canal building",
+    "classes": ["construction", "water", "irrigation"]
+  },
+  {
+    "document": "Northern agricultural irrigation system reconstruction",
+    "classes": ["construction", "irrigation"]
+  },
+  {
+    "document": "rural development trough modern water provisioning and irrigation.",
+    "classes": ["irrigation"]
+  },
+  {
+    "document": "support to the ministry of public works",
+    "classes": ["construction"]
+  },
+  {
+    "document": "drought prevention and alleviation trough irrigation and water provisioning for agriculture",
+    "classes": ["water", "irrigation"]
+  }
+]
