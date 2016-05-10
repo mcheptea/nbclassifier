@@ -6,7 +6,11 @@ The Naive-Bayes classifier is a statistical classifier which relies on a "traine
 to classify documents.
 
 Documents are chunks of plain text, classes are any type of class structure a document ay fall under.
-Examples: Restaurant Menu <-> Food Type, Vocabulary <-> Language, Novel <-> Author
+
+*Examples:*
+    * `Restaurant Menu <-> Food Type`
+    * `Vocabulary <-> Language`
+    * `Novel <-> Author`
 
 ## How does it work?
 
