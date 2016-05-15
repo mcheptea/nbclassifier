@@ -7,7 +7,11 @@
  * Date: 08-May-16
  * Time: 16:57
  */
-require_once(__DIR__ . "/../vendor/autoload.php");
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+    require_once(__DIR__.'/../vendor/autoload.php');
+} else {
+    require_once(realpath(__DIR__.'/../../../').'/autoload.php');
+}
 
 use Classifier\Trainer;
 
