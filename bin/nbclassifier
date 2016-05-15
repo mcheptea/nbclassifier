@@ -15,10 +15,15 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
 
 use Classifier\Classifier;
 
-$options = getopt("t:f:h");
+$options = getopt("t:f:h", "init");
 
 if (isset($options['h']) || empty($options)) {
     showHelp();
+    exit(0);
+}
+
+if (isset($options['init'])) {
+    copy(__DIR__ . "/../nbclassifier.yml", __DIR__ . "/../../../../nbclassifier.yml");
     exit(0);
 }
 
@@ -58,6 +63,7 @@ function showHelp()
     echo "\t\tquotes and escaped.\n";
     echo "\t -f \tThe path to the file containing the text.\n";
     echo "\t -h \tDisplays this help message.\n";
+    echo "\t --init \tInitializes the classifier's Redis configuration file.\n";
     echo "\nExample:\n";
     echo "\t php nbclassifier -t \"Lorem ipsum...\"";
 }
