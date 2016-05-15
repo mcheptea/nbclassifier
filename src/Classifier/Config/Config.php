@@ -24,7 +24,7 @@ class Config
         if (file_exists(__DIR__ . "/../../../vendor/autoload.php")) {
             return __DIR__ . "/../../../nbclassifier.yml";
         } else {
-            return realpath(__DIR__ . "/../../../../nbclassifier.yml");
+            return realpath(__DIR__ . "/../../../../../../nbclassifier.yml");
         }
     }
 
