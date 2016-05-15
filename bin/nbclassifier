@@ -23,8 +23,13 @@ if (isset($options['h']) || empty($options)) {
 }
 
 if (isset($options['init'])) {
-    copy(__DIR__ . "/../nbclassifier.yml", __DIR__ . "/../../../../nbclassifier.yml");
-    exit(0);
+    if (@copy(__DIR__ . "/../nbclassifier.yml", __DIR__ . "/../../../../nbclassifier.yml")) {
+        echo "OK!";
+        exit(1);
+    } else {
+        echo "Failed!";
+        exit(1);
+    }
 }
 
 validateOptions($options);
