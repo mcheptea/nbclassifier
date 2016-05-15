@@ -14,7 +14,14 @@ use Exception;
  */
 class Config
 {
-    public static $configFile = "../../../nbclassifier.yml";
+    private static function getPath()
+    {
+        if (file_exists(__DIR__.'/../../../vendor/autoload.php')) {
+            return "../../../nbclassifier.yml";
+        } else {
+            require_once(realpath(__DIR__ . "/../../../../")."nbclassifier.yml");
+        }
+    }
 
     /**
      * Returns the value of a key. The path is separated by dots (.)
@@ -26,7 +33,7 @@ class Config
     public static function get($path = "")
     {
         $path = explode(".", $path);
-        $configFileName = __DIR__ . "/" . self::$configFile;
+        $configFileName = self::getPath();
 
         if (!file_exists($configFileName)) {
             throw new Exception("No configuration file named ". $configFileName . " exists!");
