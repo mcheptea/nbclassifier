@@ -14,12 +14,17 @@ use Exception;
  */
 class Config
 {
+    /**
+     * Retrieves the Redis yml configuration file.
+     *
+     * @return string The path to the configuraiton file.
+     */
     private static function getPath()
     {
-        if (file_exists(__DIR__.'/../../../vendor/autoload.php')) {
-            return "../../../nbclassifier.yml";
+        if (file_exists(__DIR__ . "/../../../vendor/autoload.php")) {
+            return __DIR__ . "/../../../nbclassifier.yml";
         } else {
-            require_once(realpath(__DIR__ . "/../../../../")."nbclassifier.yml");
+            return realpath(__DIR__ . "/../../../../nbclassifier.yml");
         }
     }
 
